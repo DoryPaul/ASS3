@@ -1,5 +1,5 @@
 import flask
-from flask import Flask, jsonify,request,Response
+from flask import Flask,request,Response
 import json
 import datetime
 from flask_restplus import Api,Resource,fields
