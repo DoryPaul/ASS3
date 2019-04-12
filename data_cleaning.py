@@ -1,5 +1,5 @@
 import pandas as pd
-import pylab as pl
+
 def load_file(data_path):
     df = pd.read_csv(data_path,names=['age','sex','chest pain type','resting blood pressure','serum cholestoral','fasting blood sugar',
                                       'resting electrocardiographic results','maximum heart rate','exercise induced angina',
