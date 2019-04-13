@@ -14,7 +14,7 @@ The formula is : x' = (x - X_min) / (X_max - X_min)
 # calculate the weight of each attribute
 Using stochastic gradient rise to calculate the weights
 
-##Prediction of heart disease
+# Prediction of heart disease
 First, I need to get trainning data from clean_data.csv and divide it into both trainning data and test data. Second, set trainning count from 1 to 100 to train knn model to get the number as when the probability is maximum. Simultaneously, draw line table between trainning counts and accuracy. Finally, build a knn model by this number and get input data by which take data normalization. To get the result of prediction by normalized input data. Converting the result as json and returning to the client.
 
 # Api
