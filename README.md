@@ -10,7 +10,7 @@ Because the data include some dirty data like '?' which may influence the accura
 We use Min-Max Normalization to normalize the data.
 The formula is : x' = (x - X_min) / (X_max - X_min)
 # calculate the weight of each attribute
-Using decision tree to calculate the weights
+Using stochastic gradient rise to calculate the weights
 
 # Api
 Using flask and flask_restplus to create api to provide the data to the front end.
