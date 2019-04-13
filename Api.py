@@ -1,12 +1,13 @@
 import flask
-from flask import Flask,request,Response
+from flask import Flask,request,Response,jsonify
 import json
 import datetime
+import requests
 from flask_restplus import Api,Resource,fields
 import data_cleaning,calculate_weight
 from flask_restplus import fields
 from flask_restplus import cors
-
+from predict_heart_disease import get_accuracy_score
 
 app = Flask(__name__)
 api = Api(app,default = 'Assignment3',
@@ -36,8 +37,25 @@ class data_test(Resource):
     @api.doc(description="Test Api")
     @api.expect(test_model)
     def post(self):
-        print(request.form);
-        return {'text':'success'}, 200, {'Access-Control-Allow-Origin': '*', 'Access-Control-Request-Method': '*'}
+        data = []
+        data.append(int(request.form.get('age')))
+        data.append(int(request.form.get('sex')))
+        data.append(int(request.form.get('pain_type')))
+        data.append(int(request.form.get('resting_blood_pressure')))
+        data.append(int(request.form.get('serum_cholestorable')))
+        data.append(int(request.form.get('fasting_blood_pressure')))
+        data.append(int(request.form.get('resting_elec_results')))
+        data.append(int(request.form.get('max_heart_rate')))
+        data.append(int(request.form.get('exercise_induced_angina')))
+        data.append(float(request.form.get('oldpeak')))
+        data.append(int(request.form.get('slope')))
+        data.append(int(request.form.get('no_of_major_vessels')))
+        data.append(int(request.form.get('thalassemia')))
+        prob = get_accuracy_score(data)
+        if prob == 1:
+            return {'text': 'success'}, 200
+        else:
+            return {'text': 'failure'}, 200
 
 @api.route('/data_uniform')
 class data_uniform(Resource):
@@ -57,7 +75,6 @@ class weight(Resource):
     def get(self):
         result = calculate_weight.weight()
         return result,200, {'Access-Control-Allow-Origin': '*', 'Access-Control-Request-Method': '*'}
-
 
 if __name__ == '__main__':
     app.run()
