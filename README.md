@@ -3,6 +3,12 @@ Assignment 3 of COMP9321
 # How to run?
 Firstly,run Api.py to get data from backend.
 
+### npm install
+### npm start
+Runs the app in the development mode.
+Open http://localhost:3000/LeftMenu to view it in the browser(charts).
+http://localhost:3000/Mainwebset to view it in the browser(prediction).
+
 # clean data
 Because the data include some dirty data like '?' which may influence the accuracy, we need to replace it with cleaning data.
 ### a) replace '?' with the number 99.
