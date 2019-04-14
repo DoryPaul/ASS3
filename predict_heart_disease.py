@@ -33,7 +33,7 @@ def plot_decison_regions(X, y):
     plt.axis([1,100,0,1])
     plt.plot(X, y)
    # plt.show()
-    plt.savefig('../../Project/materialUI/material_ui/src/112.png')
+    plt.savefig('./materialUI/material_ui/src/112.png')
 
 def get_accuracy_score(data):
     csv_file = 'clean_data.csv'
