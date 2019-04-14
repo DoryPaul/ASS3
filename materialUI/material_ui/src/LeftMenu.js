@@ -19,6 +19,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import {withR } from 'react-router-dom';
 import { BrowserR  as R , Router, Link, Switch } from "react-router-dom";
+import Zoom from '@material-ui/core/Zoom';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 const ITEM_HEIGHT = 48;
@@ -72,10 +79,14 @@ const styles = theme => ({
   paper:{
   	...theme.mixins.gutters(),
   	overflow: 'hidden',
-  	width:'85%',
+  	width:'90%',
   	alignItems: 'center',
   	paddingTop:theme.spacing.unit*5,
   	paddingBottom: theme.spacing.unit*5,
+  },
+  dialogPaper: {
+    height: '80%',
+    width: '80%',
   },
 });
 
@@ -84,7 +95,13 @@ class GuttersGrid extends React.Component {
   state = {
     spacing: '16',
     anchorEl: null,
+    preview:'',
+    open:false
   };
+
+  constructor(props) {
+    super(props);
+  }
  handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
@@ -99,13 +116,19 @@ class GuttersGrid extends React.Component {
       [key]: value,
     });
   };
+  handleDialogClickOpen = ( img_path, event) => {
+    this.setState({ open: true });
+    this.setState({preview: img_path})
+  };
 
+  handleDialogClose = () => {
+    this.setState({ open: false });
+  };
   render() {
     const { classes } = this.props;
     const { spacing } = this.state;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
-
     return (
 
 		<div>
@@ -116,6 +139,24 @@ class GuttersGrid extends React.Component {
 	          	onClick={this.handleClick}>
 	            <MenuIcon />
 	          </IconButton>
+            <Dialog
+          open={this.state.open}
+          onClose={this.handleDialogClose}
+          aria-labelledby="form-dialog-title"
+          fullWidth="150%"
+        >
+          <DialogTitle id="form-dialog-title">Preview</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+                <img src={this.state.preview} width="100%"/>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleDialogClose} color="primary">
+              CLOSE
+            </Button>
+          </DialogActions>
+        </Dialog>
 	          <Menu id="long-menu"
           			anchorEl={anchorEl}
           			open={open}
@@ -146,26 +187,25 @@ class GuttersGrid extends React.Component {
 	      </AppBar>
 	   <Typography component="h2" variant="h1" align="center" gutterBottom>
         Statistical Analysis 
-      	</Typography>
+      </Typography>
 	   <Grid container className={classes.root} spacing={24} justify="center" alignItems='center' wrap="wrap" alignContent='center'>
       	<Grid item className = {classes.root} xs={12} justify="center" alignItems="center"  wrap="wrap" alignContent='center'>
-	  	 <Paper className={classes.paper} elevation={24} alignItems='center'>
-      		<Grid container className={classes.root} spacing={0} alignItems='center'>
-        
-          <GridList cellHeight={100} className={classes.gridList} alignItems='center' >
-          	<GridListTile key = "Subheader" cols={3} style={{height:'auto'}}>
-          		<ListSubheader component="h1" variant="h1">Statistical Analysis Charts</ListSubheader>
+	  	    <Paper className={classes.paper} elevation={24} alignItems='center'>
+      		  <Grid container className={classes.root} spacing={0} alignItems='center'>
+              <GridList cellHeight={100} className={classes.gridList} alignItems='center' >
+          	     <GridListTile key = "Subheader" cols={3} style={{height:'auto'}}>
+          		    <ListSubheader component="h1" variant="h1">Statistical Analysis Charts</ListSubheader>
           	</GridListTile>
-          	{tileData.map(tile => (
-          <GridListTile key={tile.img} cols={2} style={{height:350,width:450,margin:'100xp'}}>
-            <img src={tile.img} alt={tile.title} />
-            <GridListTileBar
-              title={tile.title}
-              subtitle={<span>by: {tile.author}</span>}
-              actionIcon={
-                <IconButton className={classes.icon}>
-                  <InfoIcon />
-                </IconButton>
+          	 {tileData.map(tile => (
+              <GridListTile   key={tile.img} cols={2} style={{height:300,width:320,margin:'10xp'}}>
+                <img src={tile.img} alt={tile.title}/>
+              <GridListTileBar
+                title={tile.title}
+                // subtitle={<span>by: {tile.weight}</span>}
+                actionIcon={
+                  <IconButton className={classes.icon}  onClick={this.handleDialogClickOpen.bind(this, tile.img)}>
+                    <InfoIcon />
+                  </IconButton>
               }
             />
           </GridListTile>

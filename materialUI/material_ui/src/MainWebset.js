@@ -15,7 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
 import {withR } from 'react-router-dom';
-import { BrowserR  as R , Route, Link, Switch } from "react-router-dom";
+import { BrowserR  as R , Route, Link, Switch, withRouter } from "react-router-dom";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -153,6 +153,68 @@ const styles = theme => ({
 
 
 class MainWebset extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onSubmit=this.handleSubmit.bind(this); 
+    fetch('http://localhost:5000/weight', { 
+        method: 'GET',
+        mode:'cors'
+    }).then(response => response.json())
+    .then(data => {
+        console.log(data);
+        this.setState({weight_age : data['age']});
+        this.setState({weight_thal : data['thal']});
+        this.setState({weight_pain_type : data['chest pain type']});
+        this.setState({weight_serum : data['serum cholestoral']});
+        this.setState({weight_oldpeak : data['oldpeak']});
+        this.setState({weight_vessel : data['number of major vessels']});
+        this.setState({weight_max : data['maximum heart rate']});
+        this.setState({weight_rbp : data['resting blood pressure']});
+        this.setState({weight_sex : data['sex']});
+        this.setState({weight_rer : data['resting electrocardiographic results']});
+        this.setState({weight_eia : data['exercise induced angina']});
+        this.setState({weight_slope : data['the slope of ST']});
+        this.setState({weight_fbs : data['fasting blood sugar']});
+        
+    }
+    );
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+    var self = this;
+    var formData = new FormData();
+    formData.append('age', this.state.age);
+    formData.append('sex', this.state.sex);
+    formData.append('pain_type', this.state.chestpaintype);
+    formData.append('resting_blood_pressure', this.state.restingbloodpressure);
+    formData.append('serum_cholestorable', this.state.serumcholestoral);
+    formData.append('fasting_blood_pressure', this.state.fastingbloodpressure);
+    formData.append('resting_elec_results', this.state.restingelectrocardiographicresults);
+    formData.append('max_heart_rate', this.state.maximumheartrate);
+    formData.append('exercise_induced_angina', this.state.exerciseinducedangina);
+    formData.append('oldpeak', this.state.oldpeak);
+    formData.append('slope', this.state.slope);
+    formData.append('no_of_major_vessels', this.state.numberofmajorvessels);
+    formData.append('thalassemia', this.state.thalassemia);
+    let initHeaders = new Headers()
+    initHeaders.append('Accept', 'application/json, text/plain, */*')
+    initHeaders.append('Cache-Control', 'no-cache')
+    initHeaders.append('Content-Type', 'application/x-www-form-urlencoded')
+
+    console.log(formData);
+    fetch('http://localhost:5000/test', { 
+        method: 'POST',
+        //mode:'cors',
+        hearders: initHeaders,
+        body: formData
+    }).then(response => response.json())
+    .then(data => {
+        this.props.history.push({pathname:'/show_result',state:{ text : data.text}});
+       // this.context.router.push({pathname:'/show_result',state:{img_path : data.img_path, text : data.text}});   '../../../../4.14/ASS3-master/112.png'
+    }
+    );
+  }
+
   state = {
     spacing: '16',
     anchorEl: null,
@@ -169,6 +231,20 @@ class MainWebset extends React.Component {
     slope:'',
     numberofmajorvessels:'',
     thalassemia:'',
+    fastingbloodpressure:'',
+    weight_age : '',
+    weight_thal : '',
+    weight_pain_type : '',
+    weight_serum : '',
+    weight_oldpeak : '',
+    weight_vessel : '',
+    weight_max : '',
+    weight_rbp : '',
+    weight_sex : '',
+    weight_rer : '',
+    weight_eia : '',
+    weight_slope : '',
+    weight_fbs : ''
   };
   handleChange_new = name => event => {
     this.setState({
@@ -198,7 +274,6 @@ class MainWebset extends React.Component {
     const open = Boolean(anchorEl);
 
     return (
-
 		<div>
 	      <AppBar position="static">
 	        <Toolbar>
@@ -245,7 +320,7 @@ class MainWebset extends React.Component {
 	 		<List component="nav" >
 	  			<TextField
 						id = "outline-age"
-						label ="Age"
+						label ={'Age (Weight:' + this.state.weight_age + ')'}
 						className={classes.textField}
 						value={this.state.age}
 						onChange={this.handleChange_new('age')}
@@ -254,22 +329,21 @@ class MainWebset extends React.Component {
 					/>
 	  		
 	  			<TextField
-
-          				id="outlined-select-sex-native"
-          				select
-          				label="Sex"
-          				className={classes.textField}
-          				value={this.state.sex}
-          				onChange={this.handleChange_new('sex')}
-          				SelectProps={{
-            				MenuProps: {
-              				className: classes.menu,
-            				},
-          				}}
-          				helperText="1 = male, 0 = female"
-          				margin="normal"
-          				variant="outlined"
-        			>
+            id="outlined-select-sex-native"
+          	select
+          	label={'Sex (Weight:' + this.state.weight_sex + ')'}
+          	className={classes.textField}
+          	value={this.state.sex}
+          	onChange={this.handleChange_new('sex')}
+          	SelectProps={{
+            	MenuProps: {
+              	className: classes.menu,
+            	},
+          	}}
+          	helperText="1 = male, 0 = female"
+          	margin="normal"
+          	variant="outlined"
+        	>
         			{sex.map(option => (
             		<option key={option.value} value={option.value}>
               		{option.label}
@@ -277,11 +351,12 @@ class MainWebset extends React.Component {
           			))}
           		</TextField>
           	</List>
+
 	  		<List component="nav">
 	  				<TextField
           				id="outlined-select-chestpain-native"
           				select
-          				label="Chest Pain Type"
+          				label={'Chest Pain Type (Weight:' + this.state.weight_pain_type + ')'}
           				className={classes.textField}
           				value={this.state.chestpaintype}
           				onChange={this.handleChange_new('chestpaintype')}
@@ -303,7 +378,7 @@ class MainWebset extends React.Component {
 	 		
 	            <TextField
 					id = "outline-restingbloodpressure"
-					label ="Resting Blood Pressure"
+					label ={'Resting Blood Pressure (Weight :' + this.state.weight_rbp + ')'}
 					className={classes.textField}
 					value={this.state.restingbloodpressure}
 					onChange={this.handleChange_new('restingbloodpressure')}
@@ -315,7 +390,7 @@ class MainWebset extends React.Component {
 			<List component="nav">	  	
 	  			<TextField
 					id = "outline-serumcholestoral"
-					label ="Serum Cholestorale"
+					label ={'Serum Cholestoral (Weight :' + this.state.weight_serum + ')'}
 					className={classes.textField}
 					value={this.state.serumcholestoral}
 					onChange={this.handleChange_new('serumcholestoral')}
@@ -326,7 +401,7 @@ class MainWebset extends React.Component {
 	  		
 	  			<TextField
 					id = "outline-fastingbloodpressure"
-					label ="Fasting Blood Pressure"
+					label ={'Fasting Blood Pressure (Weight :' + this.state.weight_fbs + ')'}
 					className={classes.textField}
 					value={this.state.fastingbloodpressure}
 					onChange={this.handleChange_new('fastingbloodpressure')}
@@ -340,7 +415,7 @@ class MainWebset extends React.Component {
 	  				<TextField
           				id="outlined-select-restingelectrocardiographicresults-native"
           				select
-          				label="Resting Electrocardiographic Results"
+                  label ={'Resting Electrocardiographic Results (Weight :' + this.state.weight_rer + ')'}
           				className={classes.textField}
           				value={this.state.restingelectrocardiographicresults}
           				onChange={this.handleChange_new('restingelectrocardiographicresults')}
@@ -362,7 +437,7 @@ class MainWebset extends React.Component {
 	  		
 	  			<TextField
 					id = "maximumheartrate"
-					label ="Maximum Heart Rate"
+          label ={'Maximum Heart Rate(Weight :' + this.state.weight_max + ')'}
 					className={classes.textField}
 					value={this.state.maximumheartrate}
 					onChange={this.handleChange_new('maximumheartrate')}
@@ -374,7 +449,7 @@ class MainWebset extends React.Component {
 	  		<List component="nav">
 	  			<TextField
 					id = "exerciseinducedangina"
-					label ="Exercise Induced Angina"
+          label ={'Exercise Induced Angina (Weight :' + this.state.weight_eia + ')'}
 					className={classes.textField}
 					value={this.state.exerciseinducedangina}
 					onChange={this.handleChange_new('exerciseinducedangina')}
@@ -384,7 +459,7 @@ class MainWebset extends React.Component {
 	  		
 	  			<TextField
 					id = "oldpeak"
-					label ="Oldpeak"
+          label ={'Oldpeak (Weight :' + this.state.weight_oldpeak + ')'}
 					className={classes.textField}
 					value={this.state.oldpeak}
 					onChange={this.handleChange_new('oldpeak')}
@@ -397,7 +472,7 @@ class MainWebset extends React.Component {
 	  		<List component="nav">
 	  			<TextField
 						id = "slope"
-						label ="Slope"
+            label ={'Slope (Weight :' + this.state.weight_slope + ')'}
 						className={classes.textField}
 						value={this.state.slope}
 						onChange={this.handleChange_new('slope')}
@@ -408,7 +483,7 @@ class MainWebset extends React.Component {
 	  		
 	  			<TextField
 					id = "numberofmajorvessels"
-					label ="Number of Major Vessels"
+          label ={'Number of Major Vessels (Weight :' + this.state.weight_vessel + ')'}
 					className={classes.textField}
 					value={this.state.numberofmajorvessels}
 					onChange={this.handleChange_new('numberofmajorvessels')}
@@ -422,7 +497,7 @@ class MainWebset extends React.Component {
 	  			<TextField
           				id="thalassemia"
           				select
-          				label="Thalassemia"
+                  label ={'Thalassmia (Weight :' + this.state.weight_thal + ')'}
           				className={classes.textField}
           				value={this.state.thalassemia}
           				onChange={this.handleChange_new('thalassemia')}
@@ -443,9 +518,9 @@ class MainWebset extends React.Component {
           		</TextField>
           	</List>	
 	  		<List component="nav">
-				<Button variant="contained" color="primary" className={classes.button_1} component={Link} to="/show_result">
+				<Button variant="contained" color="primary" className={classes.button_1} component={Link} onClick={this.onSubmit} to="/show_result">
         		Submit and Get the prediction Result
-      			</Button>
+      	</Button>
     		</List>
     	</Paper>
     	</Grid>
