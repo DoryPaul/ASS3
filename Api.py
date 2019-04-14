@@ -53,9 +53,9 @@ class data_test(Resource):
         data.append(int(request.form.get('thalassemia')))
         prob = get_accuracy_score(data)
         if prob == 1:
-            return {'text': 'success'}, 200
+            return {'text': 'You are about to have heart disease'}, 200, {'Access-Control-Allow-Origin': '*', 'Access-Control-Request-Method': '*'}
         else:
-            return {'text': 'failure'}, 200
+            return {'text': 'You may be healthy, congratulation!'}, 200, {'Access-Control-Allow-Origin': '*', 'Access-Control-Request-Method': '*'}
 
 @api.route('/data_uniform')
 class data_uniform(Resource):
@@ -64,7 +64,7 @@ class data_uniform(Resource):
     @api.doc(descrption='Uniform data')
     def get(self):
         result = data_cleaning.data_uniform('clean_data.csv').to_json(orient='values')
-        return result,200
+        return result,200, {'Access-Control-Allow-Origin': '*', 'Access-Control-Request-Method': '*'}
 
 
 @api.route('/weight')

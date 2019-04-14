@@ -1,7 +1,7 @@
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.utils import shuffle
 from sklearn.metrics import precision_score, accuracy_score, recall_score
-from data_cleaning import data_uniform, input_data_uniform
+import data_cleaning #import data_uniform, input_data_uniform
 import matplotlib.pyplot as plt
 import pandas as pd
 import requests
@@ -32,12 +32,13 @@ def plot_decison_regions(X, y):
     plt.title("Accuracy Graph")
     plt.axis([1,100,0,1])
     plt.plot(X, y)
-    plt.show()
+   # plt.show()
+    plt.savefig('../../Project/materialUI/material_ui/src/112.png')
 
 def get_accuracy_score(data):
     csv_file = 'clean_data.csv'
-    temp = data_uniform(csv_file)
-    data = input_data_uniform(csv_file, data)
+    temp = data_cleaning.data_uniform(csv_file)
+    data = data_cleaning.input_data_uniform(csv_file, data)
     iris_X_train, iris_y_train, iris_X_test, iris_y_test = load_data(temp, 0.9)
 
     maxp = 0

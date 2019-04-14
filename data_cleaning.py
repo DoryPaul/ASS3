@@ -1,5 +1,5 @@
 import pandas as pd
-import pylab as pl
+
 def load_file(data_path):
     df = pd.read_csv(data_path,names=['age','sex','chest pain type','resting blood pressure','serum cholestoral','fasting blood sugar',
                                       'resting electrocardiographic results','maximum heart rate','exercise induced angina',
@@ -21,7 +21,7 @@ def data_uniform(data_path):
         else:
             temp[df1.keys()[i]] = df1[df1.keys()[i]]
     return temp
-
+    
 def input_data_uniform(data_path, data):
     df1 = pd.read_csv(data_path,index_col=0,names=['age','sex','chest pain type','resting blood pressure','serum cholestoral','fasting blood sugar',
                                       'resting electrocardiographic results','maximum heart rate','exercise induced angina',
@@ -34,5 +34,4 @@ def input_data_uniform(data_path, data):
             temp[df1.keys()[i]] = ((d-min(df1[df1.keys()[i]]))/(max(df1[df1.keys()[i]])-min(df1[df1.keys()[i]])))
 
     return temp
-
 load_file('processed.csv')
